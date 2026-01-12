@@ -1,4 +1,4 @@
-﻿# Velocity Funds — Launch Waitlist
+# Velocity Funds — Launch Waitlist
 
 Static waitlist landing page + Cloudflare Pages Functions API (D1).
 
@@ -9,7 +9,7 @@ Static waitlist landing page + Cloudflare Pages Functions API (D1).
 3. Build settings:
    - Framework preset: None
    - Build command: (leave blank)
-   - Output directory: / (or . depending on the UI)
+   - Output directory: `/` (or `.` depending on the UI)
 4. Create a D1 database:
    - Cloudflare Dashboard → D1 → Create database (example: `vf_waitlist_prod`)
    - Run the schema in `d1/waitlist.sql`
