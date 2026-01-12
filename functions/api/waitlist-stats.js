@@ -1,4 +1,4 @@
-const CORS_HEADERS = {
+﻿const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Admin-Token",
@@ -40,39 +40,13 @@ async function ensureTable(db, table) {
     .prepare(
       `CREATE TABLE IF NOT EXISTS ${table} (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL,
-        email_hash TEXT NOT NULL UNIQUE,
-        created_at TEXT NOT NULL,
-        ip_address TEXT,
-        cookie_id TEXT,
-        country TEXT,
-        region TEXT,
-        city TEXT,
-        postal_code TEXT,
-        timezone TEXT,
-        latitude REAL,
-        longitude REAL,
-        continent TEXT,
-        user_agent TEXT,
-        accept_language TEXT,
-        locale TEXT,
-        client_time TEXT,
-        page_url TEXT,
-        referrer TEXT,
-        cookies_enabled INTEGER,
-        utm_source TEXT,
-        utm_medium TEXT,
-        utm_campaign TEXT,
-        utm_term TEXT,
-        utm_content TEXT,
-        location_json TEXT,
-        client_context_json TEXT
+        email TEXT NOT NULL UNIQUE,
+        created_at TEXT NOT NULL
       )`
     )
     .run();
 
   await db.prepare(`CREATE INDEX IF NOT EXISTS ${table}_created_at_idx ON ${table} (created_at)`).run();
-  await db.prepare(`CREATE INDEX IF NOT EXISTS ${table}_country_idx ON ${table} (country)`).run();
 }
 
 function getAuthToken(request) {
@@ -113,20 +87,18 @@ export async function onRequestGet({ request, env }) {
     )
     .all();
 
-  const byCountry = await db
+  const recent = await db
     .prepare(
-      `SELECT country, COUNT(*) AS count
+      `SELECT email, created_at
        FROM ${table}
-       WHERE country IS NOT NULL AND country != ''
-       GROUP BY country
-       ORDER BY count DESC
-       LIMIT 20`
+       ORDER BY created_at DESC
+       LIMIT 200`
     )
     .all();
 
   return json(200, {
     total,
     by_day: byDay?.results || [],
-    by_country: byCountry?.results || [],
+    recent: recent?.results || [],
   });
 }

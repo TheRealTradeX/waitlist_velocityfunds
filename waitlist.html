@@ -71,13 +71,15 @@
               </button>
             </div>
             <p class="text-xs text-neutral-500">
-              We only email pre-launch updates and access info. No spam, ever.
+              We'll only use your email for launch updates. No spam, ever.
             </p>
           </form>
           <div id="waitlistState" class="text-sm text-neutral-400 min-h-[1.5rem]" aria-live="polite"></div>
 
           <p class="text-xs text-neutral-500">
-            &copy; 2026 Velocity Funds. All rights reserved.
+            By joining, you agree to the <a class="underline underline-offset-4 hover:text-emerald-300" href="https://velocityfunds.io/terms-of-use.html">Terms of Use</a>
+            and <a class="underline underline-offset-4 hover:text-emerald-300" href="https://velocityfunds.io/privacy.html">Privacy Policy</a>.
+            &copy; 2026 Velocity Funds.
           </p>
         </section>
 
@@ -140,19 +142,6 @@
       else stateEl.className += " text-neutral-400";
     }
 
-    function getUtmParams() {
-      const params = new URLSearchParams(window.location.search);
-      const utm = {
-        source: params.get("utm_source"),
-        medium: params.get("utm_medium"),
-        campaign: params.get("utm_campaign"),
-        term: params.get("utm_term"),
-        content: params.get("utm_content"),
-      };
-      const hasValue = Object.values(utm).some((value) => value);
-      return hasValue ? utm : null;
-    }
-
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const email = emailInput.value.trim();
@@ -168,16 +157,7 @@
       submitBtn.textContent = "Submitting...";
       setState("neutral", "Submitting securely...");
 
-      const payload = {
-        email,
-        page_url: window.location.href,
-        referrer: document.referrer || null,
-        locale: navigator.language || null,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
-        client_time: new Date().toISOString(),
-        cookies_enabled: navigator.cookieEnabled,
-        utm: getUtmParams(),
-      };
+      const payload = { email };
 
       try {
         const response = await fetch("/api/waitlist", {
