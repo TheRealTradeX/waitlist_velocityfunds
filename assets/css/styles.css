@@ -286,46 +286,22 @@ details.faq>p{color:#cfcfcf;padding:0 0 1rem}
   .pledge-grid{grid-template-columns:1fr}
 }
 
-/* ===================== */
-/* Waitlist Fullscreen UX */
-/* ===================== */
-body.min-h-screen{min-height:100svh}
-
-@supports (height: 100dvh){
-  body.min-h-screen{min-height:100dvh}
-}
-
-@supports not (height: 100svh){
-  body.min-h-screen{min-height:100vh}
-}
-
+/* ==================== */
+/* Waitlist Layout/Brand */
+/* ==================== */
 main.hero-video{
   padding:0;
-  min-height:100svh;
-  height:100svh;
-}
-
-@supports (height: 100dvh){
-  main.hero-video{
-    min-height:100dvh;
-    height:100dvh;
-  }
-}
-
-@supports not (height: 100svh){
-  main.hero-video{
-    min-height:100vh;
-    height:100vh;
-  }
+  min-height:100vh;
+  height:auto;
 }
 
 main.hero-video .container.relative{
-  padding-top:clamp(1.25rem,4vh,2.75rem);
-  padding-bottom:clamp(1.25rem,4vh,2.75rem);
+  padding-top:clamp(.75rem,2vh,1.4rem);
+  padding-bottom:clamp(.75rem,2vh,1.4rem);
 }
 
 main.hero-video .mx-auto.max-w-3xl{
-  gap:clamp(1.25rem,3vh,1.5rem);
+  gap:clamp(1rem,2vh,1.25rem);
 }
 
 main.hero-video h1{margin-inline:auto}
@@ -346,6 +322,46 @@ main.hero-video section.space-y-6 > :not([hidden]) ~ :not([hidden]){
   margin-top:1.25rem;
 }
 
+main.hero-video .h-14.w-14.rounded-2xl{
+  width:4.25rem;
+  height:4.25rem;
+  background:transparent;
+  border-color:rgba(255,255,255,.12);
+}
+
+main.hero-video img[alt="Velocity Funds"].h-8.w-8{
+  width:2.5rem;
+  height:2.5rem;
+}
+
+main.hero-video .space-y-1 > p.text-xs.uppercase{
+  position:relative;
+  font-size:clamp(.95rem,2.1vw,1.05rem);
+  color:transparent;
+}
+
+main.hero-video .space-y-1 > p.text-xs.uppercase::before{
+  content:"VELOCITY";
+  color:#fff;
+}
+
+main.hero-video .space-y-1 > p.text-xs.uppercase::after{
+  content:" FUNDS";
+  color:var(--vf-green);
+}
+
+@media (min-width:640px){
+  main.hero-video .h-14.w-14.rounded-2xl{
+    width:4.75rem;
+    height:4.75rem;
+  }
+
+  main.hero-video img[alt="Velocity Funds"].h-8.w-8{
+    width:2.85rem;
+    height:2.85rem;
+  }
+}
+
 @media (max-width:640px){
   main.hero-video p.text-lg{
     font-size:1rem;
@@ -358,12 +374,12 @@ main.hero-video section.space-y-6 > :not([hidden]) ~ :not([hidden]){
 
 @media (max-height:740px){
   main.hero-video .container.relative{
-    padding-top:1.25rem;
-    padding-bottom:1.25rem;
+    padding-top:.75rem;
+    padding-bottom:.75rem;
   }
 
   main.hero-video .mx-auto.max-w-3xl{
-    gap:1.25rem;
+    gap:1rem;
   }
 
   main.hero-video section.w-full.max-w-2xl{
