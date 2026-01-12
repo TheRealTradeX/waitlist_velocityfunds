@@ -289,6 +289,16 @@ details.faq>p{color:#cfcfcf;padding:0 0 1rem}
 /* ===================== */
 /* Waitlist Fullscreen UX */
 /* ===================== */
+body.min-h-screen{min-height:100svh}
+
+@supports (height: 100dvh){
+  body.min-h-screen{min-height:100dvh}
+}
+
+@supports not (height: 100svh){
+  body.min-h-screen{min-height:100vh}
+}
+
 main.hero-video{
   padding:0;
   min-height:100svh;
