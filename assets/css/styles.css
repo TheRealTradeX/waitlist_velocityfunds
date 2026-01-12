@@ -336,6 +336,11 @@ main.hero-video img[alt="Velocity Funds"].h-8.w-8{
 
 main.hero-video .space-y-1 > p.text-xs.uppercase{
   position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55em;
+  white-space:nowrap;
   font-size:clamp(.95rem,2.1vw,1.05rem);
   color:transparent;
 }
@@ -346,7 +351,7 @@ main.hero-video .space-y-1 > p.text-xs.uppercase::before{
 }
 
 main.hero-video .space-y-1 > p.text-xs.uppercase::after{
-  content:" FUNDS";
+  content:"FUNDS";
   color:var(--vf-green);
 }
 
