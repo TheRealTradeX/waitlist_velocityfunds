@@ -3,12 +3,189 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=/waitlist.html">
-  <link rel="canonical" href="/waitlist.html">
-  <title>Velocity Funds &mdash; Waitlist</title>
+  <title>Velocity Funds &mdash; Launch Waitlist</title>
+  <meta name="description" content="Join the Velocity Funds launch waitlist and get pre-launch updates on institutional-grade trading access.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="assets/images/velocity-funds-orbital-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
-  <p>Redirecting to <a href="/waitlist.html">/waitlist.html</a>...</p>
+<body class="bg-black text-white min-h-screen" style="font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;">
+<main class="hero-video min-h-screen" style="min-height: 100vh; align-items: center;">
+  <div class="hero-video-bg">
+    <video autoplay muted loop playsinline>
+      <source src="./assets/bg/velocity-funds-hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero-video-overlay"></div>
+  </div>
+
+  <div class="hero-video-inner w-full">
+    <div class="container relative py-16 sm:py-20 lg:py-24">
+      <div class="pointer-events-none absolute -top-28 right-0 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"></div>
+      <div class="pointer-events-none absolute bottom-0 left-10 h-72 w-72 rounded-full bg-emerald-400/10 blur-[120px]"></div>
+
+      <div class="mx-auto flex max-w-3xl flex-col items-center text-center gap-6">
+        <div class="flex flex-col items-center gap-3">
+          <div class="h-14 w-14 rounded-2xl border border-emerald-500/40 bg-emerald-400/10 flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+            <img src="assets/images/velocity-funds-orbital-icon.svg" alt="Velocity Funds" class="h-8 w-8">
+          </div>
+          <div class="space-y-1">
+            <p class="text-xs uppercase tracking-[0.22em] text-emerald-300">Velocity Funds</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <p class="eyebrow">COMING SOON</p>
+          <h1 class="text-4xl sm:text-5xl xl:text-6xl font-semibold leading-[1.05]">
+            Trade Like the Institutions Do!
+          </h1>
+          
+          <p class="text-lg text-neutral-200 leading-relaxed">
+            A structured, data-driven pathway into institutional-grade trading.
+            <span class="text-emerald-400">Accelerate Your Edge.</span>
+          </p>
+        </div>
+
+        <section class="w-full max-w-2xl rounded-2xl border border-neutral-800 bg-neutral-950/85 shadow-[0_24px_80px_rgba(0,0,0,0.65)] p-6 sm:p-8 space-y-6">
+          <div class="space-y-3">
+            <p class="text-xs uppercase tracking-[0.3em] text-emerald-300">Join the waitlist</p>
+            <h2 class="text-2xl sm:text-3xl font-semibold">Get launch updates first.</h2>
+            <p class="text-neutral-300 text-base leading-relaxed">
+              Join the waitlist for early access details, launch alerts, and priority benefits.
+            </p>
+          </div>
+
+          <form id="waitlistForm" class="space-y-4" novalidate>
+            <label for="waitlistEmail" class="sr-only">Email address</label>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <input id="waitlistEmail" name="email" type="email" required autocomplete="email"
+                     class="input w-full sm:flex-1 text-base" placeholder="your@email.com">
+              <button type="submit" id="waitlistSubmit" class="btn btn-primary w-full sm:w-auto px-6">
+                Join Waitlist
+              </button>
+            </div>
+            <p class="text-xs text-neutral-500">
+              We'll only use your email for launch updates. No spam, ever.
+            </p>
+          </form>
+          <div id="waitlistState" class="text-sm text-neutral-400 min-h-[1.5rem]" aria-live="polite"></div>
+
+          <p class="text-xs text-neutral-500">
+            &copy; 2026 Velocity Funds. All Rights Reserved. 
+          </p>
+        </section>
+
+        <div class="space-y-3">
+          <p class="text-xs uppercase tracking-[0.28em] text-neutral-400">Follow the launch</p>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <a class="h-10 w-10 rounded-full border border-neutral-800 bg-neutral-900/70 text-neutral-200 flex items-center justify-center transition hover:border-emerald-400 hover:text-emerald-300" href="https://www.instagram.com/velocityfunds.io" target="_blank" rel="noopener noreferrer" aria-label="Follow Velocity Funds on Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+                <circle cx="12" cy="12" r="4"></circle>
+                <circle cx="17.5" cy="6.5" r="1"></circle>
+              </svg>
+            </a>
+            <a class="h-10 w-10 rounded-full border border-neutral-800 bg-neutral-900/70 text-neutral-200 flex items-center justify-center transition hover:border-emerald-400 hover:text-emerald-300" href="https://www.facebook.com/velocityfunds" target="_blank" rel="noopener noreferrer" aria-label="Follow Velocity Funds on Facebook">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+            </a>
+            <a class="h-10 w-10 rounded-full border border-neutral-800 bg-neutral-900/70 text-neutral-200 flex items-center justify-center transition hover:border-emerald-400 hover:text-emerald-300" href="https://x.com/velocityfundsio" target="_blank" rel="noopener noreferrer" aria-label="Follow Velocity Funds on X">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                <path d="M4 4l7.6 9.1L4 20h4l5-5.6L18.6 20H20l-7.9-9.5L19 4h-4l-4.7 5.2L6.4 4z"></path>
+              </svg>
+            </a>
+            <a class="h-10 w-10 rounded-full border border-neutral-800 bg-neutral-900/70 text-neutral-200 flex items-center justify-center transition hover:border-emerald-400 hover:text-emerald-300" href="https://www.linkedin.com/company/velocity-funds" target="_blank" rel="noopener noreferrer" aria-label="Follow Velocity Funds on LinkedIn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <circle cx="8" cy="8" r="1"></circle>
+                <path d="M7 11v6"></path>
+                <path d="M11 17v-4a2.5 2.5 0 0 1 5 0v4"></path>
+              </svg>
+            </a>
+            <a class="h-10 w-10 rounded-full border border-neutral-800 bg-neutral-900/70 text-neutral-200 flex items-center justify-center transition hover:border-emerald-400 hover:text-emerald-300" href="https://discord.gg/TcethfQNTY" target="_blank" rel="noopener noreferrer" aria-label="Join the Velocity Funds Discord">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                <path d="M7.5 8c2-1.3 7-1.3 9 0l1.5 8.5c-1.3 1.2-3 1.9-4.8 1.9l-.7-1.1c1.1-.2 2-.6 2.8-1.3-1 .3-2 .5-3.5.5s-2.5-.2-3.5-.5c.8.7 1.7 1.1 2.8 1.3l-.7 1.1c-1.8 0-3.5-.7-4.8-1.9L7.5 8z"></path>
+                <circle cx="9.5" cy="12" r="1"></circle>
+                <circle cx="14.5" cy="12" r="1"></circle>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("waitlistForm");
+    const emailInput = document.getElementById("waitlistEmail");
+    const submitBtn = document.getElementById("waitlistSubmit");
+    const stateEl = document.getElementById("waitlistState");
+
+    if (!form || !emailInput || !submitBtn || !stateEl) return;
+
+    function setState(kind, message) {
+      stateEl.textContent = message || "";
+      stateEl.className = "text-sm min-h-[1.5rem]";
+      if (kind === "error") stateEl.className += " text-red-400";
+      else if (kind === "success") stateEl.className += " text-emerald-300";
+      else stateEl.className += " text-neutral-400";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        setState("error", "Please enter an email address.");
+        emailInput.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add("opacity-70", "cursor-not-allowed");
+      submitBtn.textContent = "Submitting...";
+      setState("neutral", "Submitting securely...");
+
+      const payload = { email };
+
+      try {
+        const response = await fetch("/api/waitlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok) {
+          setState("success", data.message || "You are on the Velocity Funds waitlist. We will keep you posted.");
+          submitBtn.textContent = "Joined";
+          emailInput.disabled = true;
+          return;
+        }
+
+        if (response.status === 409) {
+          setState("success", data.message || "You are already on the waitlist. We will keep you posted.");
+        } else {
+          setState("error", data.error || "Unable to save your email right now. Please try again.");
+        }
+      } catch (error) {
+        setState("error", "Network issue. Please try again in a moment.");
+      } finally {
+        if (!emailInput.disabled) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
+          submitBtn.textContent = "Join Waitlist";
+        }
+      }
+    });
+  });
+</script>
 </body>
 </html>
-
