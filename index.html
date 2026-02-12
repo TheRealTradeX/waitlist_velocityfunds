@@ -38,8 +38,8 @@
 <body class="bg-black text-white min-h-screen" style="font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;">
 <main class="hero-video min-h-screen" style="min-height: 100vh; align-items: center;">
   <div class="hero-video-bg">
-    <video autoplay muted loop playsinline>
-      <source src="./assets/bg/velocity-funds-hero.mp4" type="video/mp4">
+    <video id="heroVideo" autoplay muted loop playsinline preload="none" poster="assets/images/hero-poster.webp" aria-hidden="true">
+      <source data-src="./assets/bg/velocity-funds-hero.mp4" type="video/mp4">
     </video>
     <div class="hero-video-overlay"></div>
   </div>
@@ -66,7 +66,7 @@
           </h1>
           
           <p class="text-lg text-neutral-200 leading-relaxed">
-            An AI-Powered, Data-Driven Pathway into Institutional-Grade Trading.</p>
+            An AI-Powered Pathway into Institutional-Grade Trading.
             <span class="text-emerald-400">Accelerate Your Edge.</span>
           </p>
         </div>
@@ -154,6 +154,7 @@
     const submitBtn = document.getElementById("waitlistSubmit");
     const stateEl = document.getElementById("waitlistState");
     const turnstileWidgetEl = document.getElementById("turnstileWidget");
+    const heroVideo = document.getElementById("heroVideo");
     let turnstileToken = "";
     let turnstileWidgetId = null;
     let turnstileSiteKey = "";
@@ -262,6 +263,50 @@
       return true;
     }
 
+    function startHeroVideo() {
+      if (!heroVideo || heroVideo.dataset.started === "1") return;
+      heroVideo.dataset.started = "1";
+
+      const source = heroVideo.querySelector("source[data-src]");
+      if (source && source.dataset.src && !source.src) {
+        source.src = source.dataset.src;
+      }
+
+      const playVideo = () => {
+        heroVideo.play().then(() => {
+          heroVideo.classList.add("is-ready");
+        }).catch(() => {
+        });
+      };
+
+      heroVideo.load();
+      if (heroVideo.readyState >= 2) playVideo();
+      else heroVideo.addEventListener("canplay", playVideo, { once: true });
+    }
+
+    function scheduleHeroVideo() {
+      const run = () => {
+        const reducedMotion =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const saveData = navigator.connection && navigator.connection.saveData;
+        if (reducedMotion || saveData) return;
+
+        const start = () => setTimeout(startHeroVideo, 250);
+        if (typeof window.requestIdleCallback === "function") {
+          window.requestIdleCallback(start, { timeout: 1500 });
+          return;
+        }
+        start();
+      };
+
+      if (document.readyState === "complete") {
+        run();
+      } else {
+        window.addEventListener("load", run, { once: true });
+      }
+    }
+
     async function initTurnstile() {
       try {
         turnstileSiteKey = await fetchTurnstileSiteKey();
@@ -290,6 +335,7 @@
       attributionCache = captureFirstTouchAttribution();
       writeStoredAttribution(attributionCache);
     }
+    scheduleHeroVideo();
     initTurnstile();
 
     form.addEventListener("submit", async (event) => {
