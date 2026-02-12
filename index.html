@@ -31,6 +31,7 @@
   <link rel="icon" href="/assets/images/favicon-16x16.png?v=2" type="image/png" sizes="16x16">
   <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png?v=2" sizes="180x180">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body class="bg-black text-white min-h-screen" style="font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;">
 <main class="hero-video min-h-screen" style="min-height: 100vh; align-items: center;">
@@ -86,6 +87,7 @@
                 Join Waitlist
               </button>
             </div>
+            <div id="turnstileWidget" class="min-h-[65px]"></div>
             <p class="text-xs text-neutral-500">
               We'll only use your email for launch updates. No spam, ever.
             </p>
@@ -133,12 +135,19 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    const ATTRIBUTION_KEY = "vf_waitlist_attribution_v1";
+    const ATTRIBUTION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+    const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
     const form = document.getElementById("waitlistForm");
     const emailInput = document.getElementById("waitlistEmail");
     const submitBtn = document.getElementById("waitlistSubmit");
     const stateEl = document.getElementById("waitlistState");
+    const turnstileWidgetEl = document.getElementById("turnstileWidget");
+    let turnstileToken = "";
+    let turnstileWidgetId = null;
+    let turnstileSiteKey = "";
 
-    if (!form || !emailInput || !submitBtn || !stateEl) return;
+    if (!form || !emailInput || !submitBtn || !stateEl || !turnstileWidgetEl) return;
 
     function setState(kind, message) {
       stateEl.textContent = message || "";
@@ -147,6 +156,111 @@
       else if (kind === "success") stateEl.className += " text-emerald-300";
       else stateEl.className += " text-neutral-400";
     }
+
+    function captureAttribution() {
+      const params = new URLSearchParams(window.location.search);
+      const attribution = {
+        referrer: document.referrer || "",
+        landing_path: `${window.location.pathname}${window.location.search}`,
+      };
+
+      for (const key of UTM_KEYS) {
+        attribution[key] = params.get(key) || "";
+      }
+
+      return attribution;
+    }
+
+    function getAttribution() {
+      try {
+        const storedRaw = localStorage.getItem(ATTRIBUTION_KEY);
+        if (storedRaw) {
+          const stored = JSON.parse(storedRaw);
+          if (
+            stored &&
+            typeof stored.savedAt === "number" &&
+            stored.data &&
+            Date.now() - stored.savedAt < ATTRIBUTION_TTL_MS
+          ) {
+            return stored.data;
+          }
+        }
+      } catch (error) {
+      }
+
+      const firstTouch = captureAttribution();
+      try {
+        localStorage.setItem(
+          ATTRIBUTION_KEY,
+          JSON.stringify({ savedAt: Date.now(), data: firstTouch })
+        );
+      } catch (error) {
+      }
+      return firstTouch;
+    }
+
+    async function fetchTurnstileSiteKey() {
+      const response = await fetch("/api/waitlist", {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        credentials: "same-origin",
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.turnstileSiteKey) {
+        throw new Error(data.error || "Unable to load security check.");
+      }
+      return String(data.turnstileSiteKey);
+    }
+
+    function resetTurnstile() {
+      turnstileToken = "";
+      if (window.turnstile && turnstileWidgetId !== null) {
+        window.turnstile.reset(turnstileWidgetId);
+      }
+    }
+
+    function mountTurnstile() {
+      if (!window.turnstile || !turnstileSiteKey) return false;
+      turnstileWidgetId = window.turnstile.render("#turnstileWidget", {
+        sitekey: turnstileSiteKey,
+        callback: (token) => {
+          turnstileToken = token;
+        },
+        "expired-callback": () => {
+          turnstileToken = "";
+        },
+        "error-callback": () => {
+          turnstileToken = "";
+        },
+      });
+      return true;
+    }
+
+    async function initTurnstile() {
+      try {
+        turnstileSiteKey = await fetchTurnstileSiteKey();
+      } catch (error) {
+        setState("error", "Security check unavailable. Please refresh and try again.");
+        return;
+      }
+
+      let attempts = 0;
+      const maxAttempts = 60;
+      const tryMount = () => {
+        if (mountTurnstile()) return;
+        attempts += 1;
+        if (attempts >= maxAttempts) {
+          setState("error", "Security check failed to initialize. Please refresh.");
+          return;
+        }
+        setTimeout(tryMount, 100);
+      };
+
+      tryMount();
+    }
+
+    getAttribution();
+    initTurnstile();
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -158,12 +272,21 @@
         return;
       }
 
+      if (!turnstileToken) {
+        setState("error", "Please complete the security check.");
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.classList.add("opacity-70", "cursor-not-allowed");
       submitBtn.textContent = "Submitting...";
       setState("neutral", "Submitting securely...");
 
-      const payload = { email };
+      const payload = {
+        email,
+        turnstileToken,
+        ...getAttribution(),
+      };
 
       try {
         const response = await fetch("/api/waitlist", {
@@ -184,11 +307,15 @@
 
         if (response.status === 409) {
           setState("success", data.message || "You are already on the waitlist. We will keep you posted.");
+        } else if (response.status === 429) {
+          setState("error", data.error || "Too many attempts. Please try again shortly.");
         } else {
           setState("error", data.error || "Unable to save your email right now. Please try again.");
         }
+        resetTurnstile();
       } catch (error) {
         setState("error", "Network issue. Please try again in a moment.");
+        resetTurnstile();
       } finally {
         if (!emailInput.disabled) {
           submitBtn.disabled = false;

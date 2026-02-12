@@ -40,8 +40,21 @@ async function ensureTable(db, table) {
     .prepare(
       `CREATE TABLE IF NOT EXISTS ${table} (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        created_at TEXT NOT NULL
+        email TEXT NOT NULL,
+        email_normalized TEXT,
+        created_at TEXT NOT NULL,
+        referrer TEXT,
+        landing_path TEXT,
+        utm_source TEXT,
+        utm_medium TEXT,
+        utm_campaign TEXT,
+        utm_content TEXT,
+        utm_term TEXT,
+        country TEXT,
+        user_agent TEXT,
+        ip_hash TEXT,
+        status TEXT,
+        block_reason TEXT
       )`
     )
     .run();
