@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Velocity Funds Waitlist</title>
   <meta name="description" content="Join the Velocity Funds launch waitlist and get pre-launch updates on institutional-grade trading access.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="application-name" content="Velocity Funds Waitlist">
   <meta name="apple-mobile-web-app-title" content="Velocity Funds Waitlist">
   <meta property="og:title" content="Velocity Funds Waitlist">
   <meta property="og:description" content="Join the Velocity Funds launch waitlist and get pre-launch updates on institutional-grade trading access.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Velocity Funds">
-  <meta property="og:url" content="https://waitlist.velocityfunds.io/">
-  <meta property="og:image" content="https://waitlist.velocityfunds.io/assets/images/og-velocity-waitlist.png?v=4">
+  <meta property="og:url" content="https://velocityfunds.io/">
+  <meta property="og:image" content="https://velocityfunds.io/assets/images/og-velocity-waitlist.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -20,8 +21,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Velocity Funds Waitlist">
   <meta name="twitter:description" content="Join the Velocity Funds launch waitlist and get pre-launch updates on institutional-grade trading access.">
-  <meta name="twitter:image" content="https://waitlist.velocityfunds.io/assets/images/og-velocity-waitlist.png?v=4">
+  <meta name="twitter:image" content="https://velocityfunds.io/assets/images/og-velocity-waitlist.png">
   <meta name="twitter:image:alt" content="Velocity Funds Waitlist">
+  <link rel="canonical" href="https://velocityfunds.io/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -138,6 +140,15 @@
     const ATTRIBUTION_KEY = "vf_waitlist_attribution_v1";
     const ATTRIBUTION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
     const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+    const ATTRIBUTION_EMPTY = {
+      referrer: "",
+      landing_path: "",
+      utm_source: "",
+      utm_medium: "",
+      utm_campaign: "",
+      utm_content: "",
+      utm_term: "",
+    };
     const form = document.getElementById("waitlistForm");
     const emailInput = document.getElementById("waitlistEmail");
     const submitBtn = document.getElementById("waitlistSubmit");
@@ -146,6 +157,7 @@
     let turnstileToken = "";
     let turnstileWidgetId = null;
     let turnstileSiteKey = "";
+    let attributionCache = null;
 
     if (!form || !emailInput || !submitBtn || !stateEl || !turnstileWidgetEl) return;
 
@@ -157,46 +169,60 @@
       else stateEl.className += " text-neutral-400";
     }
 
-    function captureAttribution() {
+    function readStoredAttribution() {
+      try {
+        const storedRaw = localStorage.getItem(ATTRIBUTION_KEY);
+        if (!storedRaw) return null;
+        const stored = JSON.parse(storedRaw);
+        if (
+          !stored ||
+          typeof stored.savedAt !== "number" ||
+          !stored.data ||
+          typeof stored.data !== "object" ||
+          Date.now() - stored.savedAt >= ATTRIBUTION_TTL_MS
+        ) {
+          return null;
+        }
+
+        return {
+          ...ATTRIBUTION_EMPTY,
+          ...stored.data,
+        };
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function writeStoredAttribution(data) {
+      try {
+        localStorage.setItem(
+          ATTRIBUTION_KEY,
+          JSON.stringify({ savedAt: Date.now(), data })
+        );
+      } catch (error) {
+      }
+    }
+
+    function captureFirstTouchAttribution() {
       const params = new URLSearchParams(window.location.search);
       const attribution = {
+        ...ATTRIBUTION_EMPTY,
         referrer: document.referrer || "",
-        landing_path: `${window.location.pathname}${window.location.search}`,
+        landing_path: window.location.pathname,
       };
 
-      for (const key of UTM_KEYS) {
-        attribution[key] = params.get(key) || "";
+      for (const [key, value] of params.entries()) {
+        const normalizedKey = key.toLowerCase();
+        if (UTM_KEYS.includes(normalizedKey)) {
+          attribution[normalizedKey] = value || "";
+        }
       }
 
       return attribution;
     }
 
-    function getAttribution() {
-      try {
-        const storedRaw = localStorage.getItem(ATTRIBUTION_KEY);
-        if (storedRaw) {
-          const stored = JSON.parse(storedRaw);
-          if (
-            stored &&
-            typeof stored.savedAt === "number" &&
-            stored.data &&
-            Date.now() - stored.savedAt < ATTRIBUTION_TTL_MS
-          ) {
-            return stored.data;
-          }
-        }
-      } catch (error) {
-      }
-
-      const firstTouch = captureAttribution();
-      try {
-        localStorage.setItem(
-          ATTRIBUTION_KEY,
-          JSON.stringify({ savedAt: Date.now(), data: firstTouch })
-        );
-      } catch (error) {
-      }
-      return firstTouch;
+    function getSubmissionAttribution() {
+      return readStoredAttribution() || attributionCache || { ...ATTRIBUTION_EMPTY };
     }
 
     async function fetchTurnstileSiteKey() {
@@ -259,7 +285,11 @@
       tryMount();
     }
 
-    getAttribution();
+    attributionCache = readStoredAttribution();
+    if (!attributionCache) {
+      attributionCache = captureFirstTouchAttribution();
+      writeStoredAttribution(attributionCache);
+    }
     initTurnstile();
 
     form.addEventListener("submit", async (event) => {
@@ -285,7 +315,7 @@
       const payload = {
         email,
         turnstileToken,
-        ...getAttribution(),
+        ...getSubmissionAttribution(),
       };
 
       try {
